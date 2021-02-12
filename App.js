@@ -1,24 +1,67 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View , TextInput , Button} from 'react-native';
+import React, { Component } from 'react';
+import {View, Text, TouchableOpacity, SafeAreaView} from 'react-native';
+import firebase from 'firebase';
+import LoginForm from './component/LoginForm';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <TextInput placeholder="Email adress" style={{width: 250 , height: 30, borderColor: "black", borderWidth: 1, borderSolid: 10}}></TextInput>
-      <TextInput placeholder="password" style={{margin:20, width: 250 , height: 30, borderColor: "black", borderWidth: 1, borderSolid: 10}}></TextInput>
-      <Button title="送信" style={{  borderColor: "black", borderWidth: 1, borderSolid:10 }} onPress={() => this.signUp()} />
-      <StatusBar style="auto" />
-    </View>
-  );
+class App extends Component {
+  state = { loggedIn: null };
+
+  componentDidMount() {
+    const firebaseConfig = {
+      apiKey: "AIzaSyD54tuji7mFAynSgcOF9dF6WCmYSLbEn5k",
+      authDomain: "catproject-5d6e2.firebaseapp.com",
+      databaseURL: "https://catproject-5d6e2.firebaseio.com",
+      projectId: "catproject-5d6e2",
+      storageBucket: "catproject-5d6e2.appspot.com",
+      messagingSenderId: "823519038517",
+    //  appId: "Your_code"
+    }
+    if (!firebase.apps.length) { // これをいれないとエラーになったのでいれてます。
+      firebase.initializeApp(firebaseConfig);
+    }
+
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.setState({ loggedIn: true });
+      } else {
+        this.setState({ loggedIn: false });
+      }
+    });
+  }
+
+  renderForm() {
+    if (this.state.loggedIn) {
+      return(
+        <View>
+          <TouchableOpacity onPress={() => firebase.auth().signOut()} style={styles.buttonStyle}>
+            <Text style={styles.textStyle}>ログアウト</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    } else {
+      return(<LoginForm />)
+    }
+  }
+
+  render() {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View>
+          <Text>{this.state.loggedIn ? "ログイン中です" : "ログインして下さい"}</Text>
+        </View>
+        {this.renderForm()}
+      </SafeAreaView>
+    )
+  }
 }
 
-const styles = StyleSheet.create({
+const styles = {
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+       flex: 1,
+       backgroundColor: '#fff',
+       alignItems: 'center',
+       justifyContent: 'center',
+     },
+}
+
+export default App;
