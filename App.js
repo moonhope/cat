@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {View, Text, TouchableOpacity, SafeAreaView} from 'react-native';
 import firebase from 'firebase';
 import LoginForm from './component/LoginForm';
+import registerForPushNotificationsAsync from './component/registerForPushNotificationsAsync';
+
 
 class App extends Component {
   state = { loggedIn: null };
@@ -36,7 +38,11 @@ class App extends Component {
           <TouchableOpacity onPress={() => firebase.auth().signOut()} style={styles.buttonStyle}>
             <Text style={styles.textStyle}>ログアウト</Text>
           </TouchableOpacity>
+        <TouchableOpacity onPress={() => registerForPushNotificationsAsync()} style={styles.buttonStyle}>
+          <Text style={styles.textStyle}>PUSH用トークン取得</Text>
+        </TouchableOpacity>
         </View>
+
       )
     } else {
       return(<LoginForm />)
