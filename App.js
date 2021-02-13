@@ -3,7 +3,8 @@ import {View, Text, TouchableOpacity, SafeAreaView} from 'react-native';
 import firebase from 'firebase';
 import LoginForm from './component/LoginForm';
 import registerForPushNotificationsAsync from './component/registerForPushNotificationsAsync';
-
+// import * as Notifications from 'expo-notifications'
+import { Notifications } from 'expo';
 
 class App extends Component {
   state = { loggedIn: null };
@@ -29,6 +30,28 @@ class App extends Component {
         this.setState({ loggedIn: false });
       }
     });
+
+   this.notificationSubscription = Notifications.addListener(this.handleNotification);
+
+    //badge消したり
+    /*
+    Notifications.getBadgeNumberAsync().then(badgeNumber => {
+      if(badgeNumber !==0){
+        Notifications.setBadgeNumberAsync(badgeNumber - 1);
+      }
+    })
+    */
+
+  }
+
+  handleNotification = (notification) => {
+    if(notification.origin === 'selected'){
+      //バックグラウンドで通知
+    }else if(notification.origin === 'received'){
+      //フォアグラウンドで通知
+      alert('通知が来ました:' + notification.data.name);
+      console.log(notification.data.name);
+    }
   }
 
   renderForm() {
