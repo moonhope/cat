@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, TouchableOpacity, Text, TextInput, ActivityIndicator } from 'react-native';
 import firebase from 'firebase';
 
-class LoginForm extends Component {
+class LoginPage extends Component {
   state = { email: '', password: '', error: '', loading: false};
 
   onButtonPress() {
@@ -51,6 +51,9 @@ class LoginForm extends Component {
   render() {
     return (
       <View>
+        <Text style={styles.textStatus} >ログインして下さい</Text>
+
+        <View style={styles.container}>
         <View>
           <TextInput
               placeholder="user@gmail.com"
@@ -58,8 +61,7 @@ class LoginForm extends Component {
               value={this.state.email}
               onChangeText={email => this.setState({ email })}
               style={styles.textInput}
-            
-            />
+          />
         </View>
         <View style={styles.wrap}>
           <TextInput
@@ -69,11 +71,12 @@ class LoginForm extends Component {
               value={this.state.password}
               onChangeText={password => this.setState({ password })}
               style={styles.textInput}
-            />
+          />
         </View>
 
         <View style={styles.wrap}>
           {this.loadSpinner()}
+        </View>
         </View>
       </View>
     )
@@ -81,11 +84,23 @@ class LoginForm extends Component {
 }
 
 const styles = {
+  container: {
+    // flex: 1,
+     marginTop:'60%',
+     backgroundColor: 'white',
+     alignItems: 'center',
+     justifyContent: 'center',
+  },
+  textStatus:{
+    color:'blue',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   buttonStyle: {
-    margin:10,borderColor: "black", borderWidth: 1, borderSolid:10 ,width:200, height:30,backgroundColor:"blue",alignItems:"center",justifyContent: 'center'
+    margin:10,borderColor: "black", borderWidth: 1, borderStyle:'solid' ,width:200, height:30,backgroundColor:"blue",alignItems:"center",justifyContent: 'center'
   },
   textInput: {
-    margin:10, borderWidth: 1, borderSolid:10 ,width:200,height:30
+    margin:10, borderWidth: 1, borderStyle:'solid' ,width:200,height:30
   },
   buttonText:{
     color:"white"
@@ -93,4 +108,4 @@ const styles = {
   // スタイルを記述
 }
 
-export default LoginForm;
+export default LoginPage;

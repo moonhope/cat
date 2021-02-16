@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import {View, Text, TouchableOpacity, SafeAreaView} from 'react-native';
+import { SafeAreaView } from 'react-native';
 import firebase from 'firebase';
-import LoginForm from './component/LoginForm';
-import registerForPushNotificationsAsync from './component/registerForPushNotificationsAsync';
+import LoginPage from './component/LoginPage';
+import HomePage from './component/HomePage';
 // import * as Notifications from 'expo-notifications'
 import { Notifications } from 'expo';
 
@@ -10,37 +10,10 @@ class App extends Component {
   state = { loggedIn: null };
 
   componentDidMount() {
-    const firebaseConfig = {
-      apiKey: "AIzaSyD54tuji7mFAynSgcOF9dF6WCmYSLbEn5k",
-      authDomain: "catproject-5d6e2.firebaseapp.com",
-      databaseURL: "https://catproject-5d6e2.firebaseio.com",
-      projectId: "catproject-5d6e2",
-      storageBucket: "catproject-5d6e2.appspot.com",
-      messagingSenderId: "823519038517",
-    //  appId: "Your_code"
-    }
-    if (!firebase.apps.length) { // これをいれないとエラーになったのでいれてます。
-      firebase.initializeApp(firebaseConfig);
-    }
 
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setState({ loggedIn: true });
-      } else {
-        this.setState({ loggedIn: false });
-      }
-    });
+    this.firebaseInit();
 
-   this.notificationSubscription = Notifications.addListener(this.handleNotification);
-
-    //badge消したり
-    /*
-    Notifications.getBadgeNumberAsync().then(badgeNumber => {
-      if(badgeNumber !==0){
-        Notifications.setBadgeNumberAsync(badgeNumber - 1);
-      }
-    })
-    */
+    this.notificationSubscription = Notifications.addListener(this.handleNotification);
 
   }
 
@@ -56,41 +29,64 @@ class App extends Component {
 
   renderForm() {
     if (this.state.loggedIn) {
-      return(
-        <View>
-          <TouchableOpacity onPress={() => firebase.auth().signOut()} style={styles.buttonStyle}>
-            <Text style={styles.textStyle}>ログアウト</Text>
-          </TouchableOpacity>
-        <TouchableOpacity onPress={() => registerForPushNotificationsAsync()} style={styles.buttonStyle}>
-          <Text style={styles.textStyle}>PUSH用トークン取得</Text>
-        </TouchableOpacity>
-        </View>
-
-      )
+      return( <HomePage/> )
     } else {
-      return(<LoginForm />)
+      return( <LoginPage /> )
     }
+  }
+
+  firebaseInit(){
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD54tuji7mFAynSgcOF9dF6WCmYSLbEn5k",
+      authDomain: "catproject-5d6e2.firebaseapp.com",
+      databaseURL: "https://catproject-5d6e2.firebaseio.com",
+      projectId: "catproject-5d6e2",
+      storageBucket: "catproject-5d6e2.appspot.com",
+      messagingSenderId: "823519038517",
+    }
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        this.setState({ loggedIn: true });
+      } else {
+        this.setState({ loggedIn: false });
+      }
+    });
+
   }
 
   render() {
     return (
-      <SafeAreaView style={styles.container}>
-        <View>
-          <Text>{this.state.loggedIn ? "ログイン中です" : "ログインして下さい"}</Text>
-        </View>
+      <SafeAreaView>
         {this.renderForm()}
       </SafeAreaView>
     )
   }
+
 }
 
 const styles = {
   container: {
-       flex: 1,
-       backgroundColor: '#fff',
+       marginTop:'70%',
+       backgroundColor: 'white',
        alignItems: 'center',
        justifyContent: 'center',
-     },
+  },
+  buttonStyle: {
+    margin:10, borderColor: "orange", borderWidth: 1, borderStyle:'solid' ,width:200, height:30,backgroundColor:"orange",alignItems:"center",justifyContent: 'center'
+  },
+  buttonText:{
+    color:"white"
+  },
+  textLink:{
+    color:"white",
+    margin:"30%"
+  }
+
 }
 
 export default App;
